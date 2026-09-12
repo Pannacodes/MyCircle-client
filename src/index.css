@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "@heroui/styles";
 
 :root {
   --mycircle-primary: #c1622d;
@@ -23,6 +22,30 @@
   --mycircle-warning: #b8863b;
   --mycircle-error: #b3413a;
   --mycircle-info: #3e6e8e;
+}
+
+[data-theme="dark"] {
+  --mycircle-primary: #e08b57;
+  --mycircle-primary-hover: #f0a06e;
+  --mycircle-primary-tint: #3a2a20;
+
+  --mycircle-secondary: #8fae95;
+  --mycircle-secondary-tint: #26302a;
+
+  --mycircle-accent: #e8b860;
+
+  --mycircle-background: #1c1916;
+  --mycircle-surface: #262220;
+  --mycircle-raised: #302b27;
+
+  --mycircle-text: #f1eae2;
+  --mycircle-muted: #a89e93;
+  --mycircle-border: #3b3530;
+
+  --mycircle-success: #7ab07f;
+  --mycircle-warning: #d9a455;
+  --mycircle-error: #d9776d;
+  --mycircle-info: #7fb0cc;
 }
 
 * {
