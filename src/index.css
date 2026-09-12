@@ -2,19 +2,36 @@
 @import "@heroui/styles";
 
 :root {
-  --mycircle-primary: #C1622D;
-  --mycircle-primary-hover: #A24F23;
-  --mycircle-secondary: #6E8B74;
-  --mycircle-background: #FBF7F2;
-  --mycircle-surface: #FFFFFF;
-  --mycircle-text: #2E2A26;
-  --mycircle-muted: #7A736C;
-  --mycircle-border: #E4DCD3;
+  --mycircle-primary: #c1622d;
+  --mycircle-primary-hover: #a24f23;
+  --mycircle-primary-tint: #f6e4d8;
+
+  --mycircle-secondary: #6e8b74;
+  --mycircle-secondary-tint: #e7efe6;
+
+  --mycircle-accent: #d9a441;
+
+  --mycircle-background: #fbf7f2;
+  --mycircle-surface: #ffffff;
+  --mycircle-raised: #f3ede6;
+
+  --mycircle-text: #2e2a26;
+  --mycircle-muted: #7a736c;
+  --mycircle-border: #e4dcd3;
+
+  --mycircle-success: #4c7a51;
+  --mycircle-warning: #b8863b;
+  --mycircle-error: #b3413a;
+  --mycircle-info: #3e6e8e;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   background-color: var(--mycircle-background);
   color: var(--mycircle-text);
-  font-family: Arial, sans-serif;
+  font-family: "Plus Jakarta Sans", Arial, sans-serif;
 }
