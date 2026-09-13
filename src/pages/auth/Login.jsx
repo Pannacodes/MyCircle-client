@@ -1,0 +1,135 @@
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import AuthLayout from "../../components/auth/AuthLayout";
+import { AuthContext } from "../../context/auth.context";
+
+function Login() {
+  const { loginUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setErrorMessage("");
+
+    if (!email || !password) {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      await loginUser(email, password);
+
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+
+      if (error.response?.data?.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <AuthLayout>
+      {/* Heading */}
+      <div className="text-center">
+        <h1 className="text-[24px] font-extrabold tracking-[-0.02em]">
+          Welcome back
+        </h1>
+
+        <p className="mt-2 text-[14px] leading-6 text-(--mycircle-muted)">
+          Your circle's been busy, let's see what's new.
+        </p>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+        {/* Email */}
+        <div>
+          <label
+            htmlFor="email"
+            className="mb-2 block text-[13px] font-semibold"
+          >
+            Email
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="Enter your email"
+            className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-[14px] outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
+          />
+        </div>
+
+        {/* Password */}
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <label
+              htmlFor="password"
+              className="block text-[13px] font-semibold"
+            >
+              Password
+            </label>
+          </div>
+
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Enter your password"
+            className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-[14px] outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
+          />
+        </div>
+
+        {/* Error */}
+        {errorMessage && (
+          <p
+            role="alert"
+            className="rounded-lg border border-(--mycircle-error)/20 bg-(--mycircle-error)/10 px-3 py-2.5 text-[13px] text-(--mycircle-error)"
+          >
+            {errorMessage}
+          </p>
+        )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="h-11 w-full rounded-xl bg-(--mycircle-primary) px-4 text-[14px] font-semibold text-white transition-colors hover:bg-(--mycircle-primary-hover) disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isLoading ? "Logging in..." : "Log in"}
+        </button>
+      </form>
+
+      {/* Signup link */}
+      <p className="mt-6 text-center text-[13px] text-(--mycircle-muted)">
+        New here?{" "}
+        <Link
+          to="/signup"
+          className="font-semibold text-(--mycircle-primary) hover:text-(--mycircle-primary-hover)"
+        >
+          Create an account
+        </Link>
+      </p>
+    </AuthLayout>
+  );
+}
+
+export default Login;
