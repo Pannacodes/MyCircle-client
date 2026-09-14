@@ -7,6 +7,8 @@ import Login from "./pages/auth/Login";
 import OnlyPrivate from "./components/OnlyPrivate";
 import AppLayout from "./components/AppLayout";
 import Groups from "./pages/groups/Groups";
+import CreateGroup from "./pages/groups/CreateGroup";
+import GroupDetails from "./pages/groups/GroupDetails";
 
 function App() {
   return (
@@ -37,6 +39,26 @@ function App() {
           <OnlyPrivate>
             <AppLayout>
               <Groups />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/create"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <CreateGroup />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <GroupDetails />
             </AppLayout>
           </OnlyPrivate>
         }

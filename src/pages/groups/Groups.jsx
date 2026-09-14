@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import service from "../../services/index.services";
 
@@ -40,6 +41,7 @@ function Groups() {
   return (
     <div>
       <h1>My Groups</h1>
+      <Link to="/groups/create">Create a group</Link>
 
       {groups.length === 0 ? (
         <p>You don't belong to any groups yet.</p>
@@ -47,7 +49,9 @@ function Groups() {
         <div>
           {groups.map((group) => (
             <div key={group._id}>
-              <h2>{group.name}</h2>
+              <Link to={`/groups/${group._id}`}>
+                <h2>{group.name}</h2>
+              </Link>
 
               {group.generalInfo && <p>{group.generalInfo}</p>}
             </div>
