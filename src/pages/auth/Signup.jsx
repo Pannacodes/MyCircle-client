@@ -12,16 +12,45 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setUsernameError("");
+    setEmailError("");
+    setPasswordError("");
     setErrorMessage("");
 
-    if (!username || !email || !password) {
-      setErrorMessage("Please fill in all fields.");
+    let hasError = false;
+
+    if (!username) {
+      setUsernameError("Please enter a username.");
+      hasError = true;
+    }
+
+    if (!email) {
+      setEmailError("Please enter your email.");
+      hasError = true;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      hasError = true;
+    }
+
+    if (!password) {
+      setPasswordError("Please enter a password.");
+      hasError = true;
+    } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password)) {
+      setPasswordError(
+        "Password must be at least 8 characters and include one uppercase letter, one lowercase letter, and one number.",
+      );
+      hasError = true;
+    }
+    if (hasError) {
       return;
     }
 
@@ -58,7 +87,7 @@ function Signup() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="mt-7 space-y-5">
         {/* Username */}
         <div>
           <label
@@ -76,6 +105,11 @@ function Signup() {
             placeholder="Choose a username"
             className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-[14px] outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
           />
+          {usernameError && (
+            <p className="mt-1.5 text-[12px] text-(--mycircle-error)">
+              {usernameError}
+            </p>
+          )}
         </div>
 
         {/* Email */}
@@ -95,6 +129,11 @@ function Signup() {
             placeholder="Enter your email"
             className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-[14px] outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
           />
+          {emailError && (
+            <p className="mt-1.5 text-[12px] text-(--mycircle-error)">
+              {emailError}
+            </p>
+          )}
         </div>
 
         {/* Password */}
@@ -114,6 +153,11 @@ function Signup() {
             placeholder="Create a password"
             className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-[14px] outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
           />
+          {passwordError && (
+            <p className="mt-1.5 text-[12px] text-(--mycircle-error)">
+              {passwordError}
+            </p>
+          )}
         </div>
 
         {/* Error */}

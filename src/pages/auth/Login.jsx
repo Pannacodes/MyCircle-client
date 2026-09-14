@@ -11,16 +11,34 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setEmailError("");
+    setPasswordError("");
     setErrorMessage("");
 
-    if (!email || !password) {
-      setErrorMessage("Please fill in all fields.");
+    let hasError = false;
+
+    if (!email) {
+      setEmailError("Please enter your email.");
+      hasError = true;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      hasError = true;
+    }
+
+    if (!password) {
+      setPasswordError("Please enter your password.");
+      hasError = true;
+    }
+
+    if (hasError) {
       return;
     }
 
@@ -57,7 +75,7 @@ function Login() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="mt-7 space-y-5">
         {/* Email */}
         <div>
           <label
@@ -75,18 +93,18 @@ function Login() {
             placeholder="Enter your email"
             className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-[14px] outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
           />
+          {emailError && (
+            <p className="mt-1.5 text-[12px] text-(--mycircle-error)">
+              {emailError}
+            </p>
+          )}
         </div>
 
         {/* Password */}
         <div>
-          <div className="mb-2 flex items-center justify-between">
-            <label
-              htmlFor="password"
-              className="block text-[13px] font-semibold"
-            >
-              Password
-            </label>
-          </div>
+          <label htmlFor="password" className="block text-[13px] font-semibold">
+            Password
+          </label>
 
           <input
             id="password"
@@ -96,6 +114,11 @@ function Login() {
             placeholder="Enter your password"
             className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-[14px] outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
           />
+          {passwordError && (
+            <p className="mt-1.5 text-[12px] text-(--mycircle-error)">
+              {passwordError}
+            </p>
+          )}
         </div>
 
         {/* Error */}
