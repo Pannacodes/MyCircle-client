@@ -9,6 +9,10 @@ import AppLayout from "./components/AppLayout";
 import Groups from "./pages/groups/Groups";
 import CreateGroup from "./pages/groups/CreateGroup";
 import GroupDetails from "./pages/groups/GroupDetails";
+import Tasks from "./pages/tasks/Tasks";
+import CreateTask from "./pages/tasks/CreateTask";
+import TaskDetails from "./pages/tasks/TaskDetails";
+import EditTask from "./pages/tasks/EditTask";
 
 function App() {
   return (
@@ -59,6 +63,46 @@ function App() {
           <OnlyPrivate>
             <AppLayout>
               <GroupDetails />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/tasks"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <Tasks />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/tasks/create"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <CreateTask />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/tasks/:taskId"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <TaskDetails />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/tasks/:taskId/edit"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <EditTask />
             </AppLayout>
           </OnlyPrivate>
         }
