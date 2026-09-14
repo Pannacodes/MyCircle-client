@@ -63,6 +63,11 @@ function GroupDetails() {
         <Link to={`/groups/${groupId}/tasks`}>View tasks</Link>
       )}
 
+      {group.enabledModules.includes("activities") && (
+        <Link to={`/groups/${groupId}/activities`}>View activities</Link>
+      )}
+      <Link to={`/groups/${groupId}/settings`}>Group settings</Link>
+
       <p>Members: {group.members.length}</p>
       <p>Owners: {group.owners.length}</p>
     </div>

@@ -9,10 +9,15 @@ import AppLayout from "./components/AppLayout";
 import Groups from "./pages/groups/Groups";
 import CreateGroup from "./pages/groups/CreateGroup";
 import GroupDetails from "./pages/groups/GroupDetails";
+import GroupSettings from "./pages/groups/GroupSettings";
 import Tasks from "./pages/tasks/Tasks";
 import CreateTask from "./pages/tasks/CreateTask";
 import TaskDetails from "./pages/tasks/TaskDetails";
 import EditTask from "./pages/tasks/EditTask";
+import Activities from "./pages/activities/Activities";
+import CreateActivity from "./pages/activities/CreateActivity";
+import ActivityDetails from "./pages/activities/ActivityDetails";
+import EditActivity from "./pages/activities/EditActivity";
 
 function App() {
   return (
@@ -68,6 +73,16 @@ function App() {
         }
       />
       <Route
+        path="/groups/:groupId/settings"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <GroupSettings />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
         path="/groups/:groupId/tasks"
         element={
           <OnlyPrivate>
@@ -107,6 +122,47 @@ function App() {
           </OnlyPrivate>
         }
       />
+      <Route
+        path="/groups/:groupId/activities"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <Activities />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/activities/create"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <CreateActivity />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/activities/:activityId"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <ActivityDetails />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/activities/:activityId/edit"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <EditActivity />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
     </Routes>
