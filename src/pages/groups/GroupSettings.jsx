@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 import service from "../../services/index.services";
+import { AuthContext } from "../../context/auth.context";
 
 function GroupSettings() {
   const { groupId } = useParams();
   const navigate = useNavigate();
+  const { loggedUserId } = useContext(AuthContext);
 
   const [name, setName] = useState("");
   const [generalInfo, setGeneralInfo] = useState("");
@@ -161,6 +163,30 @@ function GroupSettings() {
     }
   };
 
+  const deleteGroup = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this group? This will also delete all tasks and activities in the group.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await service.delete(`/groups/${groupId}`);
+
+      navigate("/groups");
+    } catch (error) {
+      console.log(error);
+
+      if (error.response?.data?.errorMessage) {
+        setErrorMessage(error.response.data.errorMessage);
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    }
+  };
+
   useEffect(() => {
     getGroup();
   }, [groupId]);
@@ -187,6 +213,8 @@ function GroupSettings() {
     return <p>Loading group settings...</p>;
   }
 
+  const isOwner = group.owners.some((owner) => owner._id === loggedUserId);
+
   const modules = [
     {
       name: "tasks",
@@ -196,14 +224,14 @@ function GroupSettings() {
       name: "activities",
       label: "Activities",
     },
-    {
-      name: "shopping",
-      label: "Shopping",
-    },
-    {
-      name: "expenses",
-      label: "Expenses",
-    },
+    // {
+    //   name: "shopping",
+    //   label: "Shopping",
+    // },
+    // {
+    //   name: "expenses",
+    //   label: "Expenses",
+    // },
   ];
 
   const disableModule = async (moduleName) => {
@@ -229,50 +257,52 @@ function GroupSettings() {
       <Link to={`/groups/${groupId}`}>← Back to group</Link>
 
       <h1>Group settings</h1>
+      {isOwner && (
+        <>
+          <h2>Group information</h2>
 
-      <h2>Group information</h2>
+          <form onSubmit={updateGroup}>
+            <div>
+              <label htmlFor="name">Group name</label>
 
-      <form onSubmit={updateGroup}>
-        <div>
-          <label htmlFor="name">Group name</label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+              />
+            </div>
 
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </div>
+            <div>
+              <label htmlFor="generalInfo">General information</label>
 
-        <div>
-          <label htmlFor="generalInfo">General information</label>
+              <textarea
+                id="generalInfo"
+                value={generalInfo}
+                onChange={(event) => setGeneralInfo(event.target.value)}
+              />
+            </div>
 
-          <textarea
-            id="generalInfo"
-            value={generalInfo}
-            onChange={(event) => setGeneralInfo(event.target.value)}
-          />
-        </div>
-
-        <button type="submit" disabled={isSaving}>
-          {isSaving ? "Saving..." : "Save changes"}
-        </button>
-      </form>
+            <button type="submit" disabled={isSaving}>
+              {isSaving ? "Saving..." : "Save changes"}
+            </button>
+          </form>
+        </>
+      )}
 
       <h2>Members</h2>
 
       <ul>
         {group.members.map((member) => {
-          const isOwner = group.owners.some(
+          const memberIsOwner = group.owners.some(
             (owner) => owner._id === member._id,
           );
 
           return (
             <li key={member._id}>
               {member.username} ({member.email})
-              {isOwner ? (
-                <span> — Owner</span>
-              ) : (
+              {memberIsOwner && <span> — Owner</span>}
+              {isOwner && !memberIsOwner && (
                 <>
                   <button
                     type="button"
@@ -280,6 +310,7 @@ function GroupSettings() {
                   >
                     Make owner
                   </button>
+
                   <button
                     type="button"
                     onClick={() => removeMember(member._id)}
@@ -293,26 +324,30 @@ function GroupSettings() {
         })}
       </ul>
 
-      <h3>Add a member</h3>
+      {isOwner && (
+        <>
+          <h3>Add a member</h3>
 
-      <form onSubmit={addMember}>
-        <div>
-          <label htmlFor="memberEmail">Email address</label>
+          <form onSubmit={addMember}>
+            <div>
+              <label htmlFor="memberEmail">Email address</label>
 
-          <input
-            id="memberEmail"
-            type="email"
-            value={memberEmail}
-            onChange={(event) => setMemberEmail(event.target.value)}
-          />
-        </div>
+              <input
+                id="memberEmail"
+                type="email"
+                value={memberEmail}
+                onChange={(event) => setMemberEmail(event.target.value)}
+              />
+            </div>
 
-        {errorMessage && <p>{errorMessage}</p>}
+            {errorMessage && <p>{errorMessage}</p>}
 
-        <button type="submit" disabled={isAddingMember}>
-          {isAddingMember ? "Adding..." : "Add member"}
-        </button>
-      </form>
+            <button type="submit" disabled={isAddingMember}>
+              {isAddingMember ? "Adding..." : "Add member"}
+            </button>
+          </form>
+        </>
+      )}
 
       <h2>Modules</h2>
 
@@ -326,12 +361,14 @@ function GroupSettings() {
             {isEnabled ? (
               <>
                 <span> Enabled</span>
-                <button
-                  type="button"
-                  onClick={() => disableModule(module.name)}
-                >
-                  Disable
-                </button>
+                {isOwner && (
+                  <button
+                    type="button"
+                    onClick={() => disableModule(module.name)}
+                  >
+                    Disable
+                  </button>
+                )}
               </>
             ) : (
               <button type="button" onClick={() => enableModule(module.name)}>
@@ -344,6 +381,11 @@ function GroupSettings() {
       <button type="button" onClick={leaveGroup}>
         Leave group
       </button>
+      {isOwner && (
+        <button type="button" onClick={deleteGroup}>
+          Delete group
+        </button>
+      )}
     </div>
   );
 }
