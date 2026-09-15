@@ -6,6 +6,8 @@ const AuthContext = createContext();
 function AuthWrapper({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggedUserId, setLoggedUserId] = useState(null);
+  const [loggedUsername, setLoggedUsername] = useState(null);
+  const [loggedUserEmail, setLoggedUserEmail] = useState(null);
   const [isVerifyingUser, setIsVerifyingUser] = useState(true);
 
   const verifyUser = async () => {
@@ -14,12 +16,16 @@ function AuthWrapper({ children }) {
 
       setIsLoggedIn(true);
       setLoggedUserId(response.data.payload._id);
+      setLoggedUsername(response.data.payload.username);
+      setLoggedUserEmail(response.data.payload.email);
       setIsVerifyingUser(false);
     } catch (error) {
       localStorage.removeItem("authToken");
 
       setIsLoggedIn(false);
       setLoggedUserId(null);
+      setLoggedUsername(null);
+      setLoggedUserEmail(null);
       setIsVerifyingUser(false);
     }
   };
@@ -57,6 +63,8 @@ function AuthWrapper({ children }) {
 
     setIsLoggedIn(false);
     setLoggedUserId(null);
+    setLoggedUsername(null);
+    setLoggedUserEmail(null);
   };
 
   const passedContext = {
@@ -64,6 +72,10 @@ function AuthWrapper({ children }) {
     setIsLoggedIn,
     loggedUserId,
     setLoggedUserId,
+    loggedUsername,
+    setLoggedUsername,
+    loggedUserEmail,
+    setLoggedUserEmail,
     verifyUser,
     signupUser,
     loginUser,
