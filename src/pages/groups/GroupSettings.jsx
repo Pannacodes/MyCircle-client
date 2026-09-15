@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 import service from "../../services/index.services";
 
 function GroupSettings() {
   const { groupId } = useParams();
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [generalInfo, setGeneralInfo] = useState("");
@@ -118,6 +119,48 @@ function GroupSettings() {
     }
   };
 
+  const removeMember = async (userId) => {
+    try {
+      const response = await service.delete(
+        `/groups/${groupId}/members/${userId}`,
+      );
+
+      setGroup(response.data);
+    } catch (error) {
+      console.log(error);
+
+      if (error.response?.data?.errorMessage) {
+        setErrorMessage(error.response.data.errorMessage);
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    }
+  };
+
+  const leaveGroup = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to leave this group?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await service.delete(`/groups/${groupId}/leave`);
+
+      navigate("/groups");
+    } catch (error) {
+      console.log(error);
+
+      if (error.response?.data?.errorMessage) {
+        setErrorMessage(error.response.data.errorMessage);
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    }
+  };
+
   useEffect(() => {
     getGroup();
   }, [groupId]);
@@ -162,6 +205,24 @@ function GroupSettings() {
       label: "Expenses",
     },
   ];
+
+  const disableModule = async (moduleName) => {
+    try {
+      const response = await service.delete(
+        `/groups/${groupId}/modules/${moduleName}`,
+      );
+
+      setGroup(response.data);
+    } catch (error) {
+      console.log(error);
+
+      if (error.response?.data?.errorMessage) {
+        setErrorMessage(error.response.data.errorMessage);
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    }
+  };
 
   return (
     <div>
@@ -212,9 +273,20 @@ function GroupSettings() {
               {isOwner ? (
                 <span> — Owner</span>
               ) : (
-                <button type="button" onClick={() => promoteMember(member._id)}>
-                  Make owner
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => promoteMember(member._id)}
+                  >
+                    Make owner
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeMember(member._id)}
+                  >
+                    Remove
+                  </button>
+                </>
               )}
             </li>
           );
@@ -252,7 +324,15 @@ function GroupSettings() {
             <span>{module.label}</span>
 
             {isEnabled ? (
-              <span> Enabled</span>
+              <>
+                <span> Enabled</span>
+                <button
+                  type="button"
+                  onClick={() => disableModule(module.name)}
+                >
+                  Disable
+                </button>
+              </>
             ) : (
               <button type="button" onClick={() => enableModule(module.name)}>
                 Enable
@@ -261,6 +341,9 @@ function GroupSettings() {
           </div>
         );
       })}
+      <button type="button" onClick={leaveGroup}>
+        Leave group
+      </button>
     </div>
   );
 }
