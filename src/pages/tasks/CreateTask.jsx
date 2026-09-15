@@ -19,7 +19,7 @@ function CreateTask() {
 
     setErrorMessage("");
 
-    if (!title) {
+    if (!title.trim()) {
       setErrorMessage("Please enter a task title.");
       return;
     }
@@ -56,20 +56,22 @@ function CreateTask() {
 
       <h1>Create a task</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div>
-          <label htmlFor="title">Task title</label>
+          <label htmlFor="title">Task title *</label>
           <input
             id="title"
             type="text"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Enter a task"
+            required
+            aria-describedby={errorMessage ? "task-form-error" : undefined}
           />
         </div>
 
         <div>
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">Description (optional)</label>
           <textarea
             id="description"
             value={description}
@@ -79,7 +81,7 @@ function CreateTask() {
         </div>
 
         <div>
-          <label htmlFor="dueDate">Due date</label>
+          <label htmlFor="dueDate">Due date (optional)</label>
           <input
             id="dueDate"
             type="date"
@@ -88,7 +90,11 @@ function CreateTask() {
           />
         </div>
 
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && (
+          <p id="task-form-error" role="alert">
+            {errorMessage}
+          </p>
+        )}
 
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Creating..." : "Create task"}

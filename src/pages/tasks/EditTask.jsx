@@ -47,7 +47,7 @@ function EditTask() {
 
     setErrorMessage("");
 
-    if (!title) {
+    if (!title.trim()) {
       setErrorMessage("Please enter a task title.");
       return;
     }
@@ -87,20 +87,22 @@ function EditTask() {
 
       <h1>Edit task</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div>
-          <label htmlFor="title">Task title</label>
+          <label htmlFor="title">Task title *</label>
 
           <input
             id="title"
             type="text"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
+            required
+            aria-describedby={errorMessage ? "task-form-error" : undefined}
           />
         </div>
 
         <div>
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">Description (optional)</label>
 
           <textarea
             id="description"
@@ -110,7 +112,7 @@ function EditTask() {
         </div>
 
         <div>
-          <label htmlFor="dueDate">Due date</label>
+          <label htmlFor="dueDate">Due date (optional)</label>
 
           <input
             id="dueDate"
@@ -120,7 +122,11 @@ function EditTask() {
           />
         </div>
 
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && (
+          <p id="task-form-error" role="alert">
+            {errorMessage}
+          </p>
+        )}
 
         <button type="submit" disabled={isSaving}>
           {isSaving ? "Saving..." : "Save changes"}

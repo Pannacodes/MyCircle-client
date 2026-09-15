@@ -21,8 +21,18 @@ function CreateActivity() {
 
     setErrorMessage("");
 
-    if (!title) {
+    if (!title.trim()) {
       setErrorMessage("Please enter an activity title.");
+      return;
+    }
+
+    if (!category) {
+      setErrorMessage("Please select a category.");
+      return;
+    }
+
+    if (!date) {
+      setErrorMessage("Please select a date.");
       return;
     }
 
@@ -33,7 +43,7 @@ function CreateActivity() {
         title,
         description,
         category,
-        date: date || undefined,
+        date,
         location,
         group: groupId,
       });
@@ -60,9 +70,9 @@ function CreateActivity() {
 
       <h1>Create an activity</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div>
-          <label htmlFor="title">Activity title</label>
+          <label htmlFor="title">Activity title *</label>
 
           <input
             id="title"
@@ -70,11 +80,13 @@ function CreateActivity() {
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Enter an activity"
+            required
+            aria-describedby={errorMessage ? "activity-form-error" : undefined}
           />
         </div>
 
         <div>
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">Description (optional)</label>
 
           <textarea
             id="description"
@@ -85,12 +97,14 @@ function CreateActivity() {
         </div>
 
         <div>
-          <label htmlFor="category">Category</label>
+          <label htmlFor="category">Category *</label>
 
           <select
             id="category"
             value={category}
             onChange={(event) => setCategory(event.target.value)}
+            required
+            aria-describedby={errorMessage ? "activity-form-error" : undefined}
           >
             <option value="">Select a category</option>
             <option value="Food & Dining">Food & Dining</option>
@@ -104,18 +118,20 @@ function CreateActivity() {
         </div>
 
         <div>
-          <label htmlFor="date">Date</label>
+          <label htmlFor="date">Date *</label>
 
           <input
             id="date"
             type="date"
             value={date}
             onChange={(event) => setDate(event.target.value)}
+            required
+            aria-describedby={errorMessage ? "activity-form-error" : undefined}
           />
         </div>
 
         <div>
-          <label htmlFor="location">Location</label>
+          <label htmlFor="location">Location (optional)</label>
 
           <input
             id="location"
@@ -126,7 +142,11 @@ function CreateActivity() {
           />
         </div>
 
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && (
+          <p id="activity-form-error" role="alert">
+            {errorMessage}
+          </p>
+        )}
 
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Creating..." : "Create activity"}

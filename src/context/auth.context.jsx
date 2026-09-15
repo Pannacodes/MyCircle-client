@@ -54,6 +54,8 @@ function AuthWrapper({ children }) {
 
     setIsLoggedIn(true);
     setLoggedUserId(response.data.payload._id);
+    setLoggedUsername(response.data.payload.username);
+    setLoggedUserEmail(response.data.payload.email);
 
     return response.data;
   };

@@ -16,9 +16,11 @@ function GroupSettings() {
   const [group, setGroup] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [groupFormErrorMessage, setGroupFormErrorMessage] = useState("");
 
   const [memberEmail, setMemberEmail] = useState("");
   const [isAddingMember, setIsAddingMember] = useState(false);
+  const [memberErrorMessage, setMemberErrorMessage] = useState("");
 
   const getGroup = async () => {
     try {
@@ -42,10 +44,10 @@ function GroupSettings() {
   const updateGroup = async (event) => {
     event.preventDefault();
 
-    setErrorMessage("");
+    setGroupFormErrorMessage("");
 
-    if (!name) {
-      setErrorMessage("Group name is required.");
+    if (!name.trim()) {
+      setGroupFormErrorMessage("Please enter a group name.");
       return;
     }
 
@@ -62,9 +64,9 @@ function GroupSettings() {
       console.log(error);
 
       if (error.response?.data?.errorMessage) {
-        setErrorMessage(error.response.data.errorMessage);
+        setGroupFormErrorMessage(error.response.data.errorMessage);
       } else {
-        setErrorMessage("Something went wrong. Please try again.");
+        setGroupFormErrorMessage("Something went wrong. Please try again.");
       }
     } finally {
       setIsSaving(false);
@@ -74,10 +76,10 @@ function GroupSettings() {
   const addMember = async (event) => {
     event.preventDefault();
 
-    setErrorMessage("");
+    setMemberErrorMessage("");
 
-    if (!memberEmail) {
-      setErrorMessage("Please enter an email address.");
+    if (!memberEmail.trim()) {
+      setMemberErrorMessage("Please enter an email address.");
       return;
     }
 
@@ -94,9 +96,9 @@ function GroupSettings() {
       console.log(error);
 
       if (error.response?.data?.errorMessage) {
-        setErrorMessage(error.response.data.errorMessage);
+        setMemberErrorMessage(error.response.data.errorMessage);
       } else {
-        setErrorMessage("Something went wrong. Please try again.");
+        setMemberErrorMessage("Something went wrong. Please try again.");
       }
     } finally {
       setIsAddingMember(false);
@@ -261,20 +263,24 @@ function GroupSettings() {
         <>
           <h2>Group information</h2>
 
-          <form onSubmit={updateGroup}>
+          <form onSubmit={updateGroup} noValidate>
             <div>
-              <label htmlFor="name">Group name</label>
+              <label htmlFor="name">Group name *</label>
 
               <input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                required
+                aria-describedby={
+                  groupFormErrorMessage ? "group-settings-error" : undefined
+                }
               />
             </div>
 
             <div>
-              <label htmlFor="generalInfo">General information</label>
+              <label htmlFor="generalInfo">General information (optional)</label>
 
               <textarea
                 id="generalInfo"
@@ -286,6 +292,12 @@ function GroupSettings() {
             <button type="submit" disabled={isSaving}>
               {isSaving ? "Saving..." : "Save changes"}
             </button>
+
+            {groupFormErrorMessage && (
+              <p id="group-settings-error" role="alert">
+                {groupFormErrorMessage}
+              </p>
+            )}
           </form>
         </>
       )}
@@ -328,19 +340,27 @@ function GroupSettings() {
         <>
           <h3>Add a member</h3>
 
-          <form onSubmit={addMember}>
+          <form onSubmit={addMember} noValidate>
             <div>
-              <label htmlFor="memberEmail">Email address</label>
+              <label htmlFor="memberEmail">Email address *</label>
 
               <input
                 id="memberEmail"
                 type="email"
                 value={memberEmail}
                 onChange={(event) => setMemberEmail(event.target.value)}
+                required
+                aria-describedby={
+                  memberErrorMessage ? "member-form-error" : undefined
+                }
               />
             </div>
 
-            {errorMessage && <p>{errorMessage}</p>}
+            {memberErrorMessage && (
+              <p id="member-form-error" role="alert">
+                {memberErrorMessage}
+              </p>
+            )}
 
             <button type="submit" disabled={isAddingMember}>
               {isAddingMember ? "Adding..." : "Add member"}

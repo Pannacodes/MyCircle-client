@@ -30,7 +30,7 @@ function CreateGroup() {
 
     setErrorMessage("");
 
-    if (!name) {
+    if (!name.trim()) {
       setErrorMessage("Please enter a group name.");
       return;
     }
@@ -62,10 +62,10 @@ function CreateGroup() {
     <div>
       <h1>Create a group</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         {/* Group name */}
         <div>
-          <label htmlFor="name">Group name</label>
+          <label htmlFor="name">Group name *</label>
 
           <input
             id="name"
@@ -73,12 +73,14 @@ function CreateGroup() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="Enter a group name"
+            required
+            aria-describedby={errorMessage ? "group-form-error" : undefined}
           />
         </div>
 
         {/* General information */}
         <div>
-          <label htmlFor="generalInfo">General information</label>
+          <label htmlFor="generalInfo">General information (optional)</label>
 
           <textarea
             id="generalInfo"
@@ -90,7 +92,7 @@ function CreateGroup() {
 
         {/* Modules */}
         <fieldset>
-          <legend>Modules</legend>
+          <legend>Modules (optional)</legend>
 
           <label>
             <input
@@ -114,7 +116,11 @@ function CreateGroup() {
         </fieldset>
 
         {/* Error */}
-        {errorMessage && <p role="alert">{errorMessage}</p>}
+        {errorMessage && (
+          <p id="group-form-error" role="alert">
+            {errorMessage}
+          </p>
+        )}
 
         {/* Submit */}
         <button type="submit" disabled={isLoading}>

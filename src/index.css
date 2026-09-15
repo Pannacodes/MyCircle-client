@@ -58,3 +58,124 @@ body {
   color: var(--mycircle-text);
   font-family: "Plus Jakarta Sans", Arial, sans-serif;
 }
+
+/* FullCalendar */
+
+.fc {
+  color: var(--mycircle-text);
+  font-family: "Plus Jakarta Sans", Arial, sans-serif;
+}
+
+/* Calendar header */
+
+.fc .fc-toolbar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.fc .fc-button {
+  background-color: var(--mycircle-surface);
+  border: 1px solid var(--mycircle-border);
+  border-radius: 10px;
+  color: var(--mycircle-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.7rem;
+  box-shadow: none;
+}
+
+.fc .fc-button:hover,
+.fc .fc-button:focus {
+  background-color: var(--mycircle-raised);
+  border-color: var(--mycircle-border);
+  color: var(--mycircle-text);
+  box-shadow: none;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: var(--mycircle-primary);
+  border-color: var(--mycircle-primary);
+  color: #ffffff;
+}
+
+/* Calendar grid */
+
+.fc .fc-col-header-cell {
+  background-color: var(--mycircle-raised);
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: var(--mycircle-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.fc .fc-daygrid-day-number {
+  color: var(--mycircle-text);
+  text-decoration: none;
+}
+
+.fc .fc-day-today {
+  background-color: var(--mycircle-primary-tint) !important;
+}
+
+.fc .fc-scrollgrid,
+.fc .fc-scrollgrid-section > td,
+.fc .fc-scrollgrid-section > th {
+  border-color: var(--mycircle-border);
+}
+
+.fc td,
+.fc th {
+  border-color: var(--mycircle-border);
+}
+
+/* Calendar events */
+
+.fc .fc-daygrid-event {
+  border-radius: 8px;
+  border-width: 1px;
+  cursor: pointer;
+  padding: 2px 5px;
+}
+
+.fc .fc-daygrid-event-dot {
+  display: none;
+}
+
+/* Tasks */
+
+.fc .calendar-task {
+  background-color: var(--mycircle-primary);
+  border-color: var(--mycircle-primary);
+  color: #ffffff;
+}
+
+/* Activities */
+
+.fc .calendar-activity {
+  background-color: var(--mycircle-secondary);
+  border-color: var(--mycircle-secondary);
+  color: #ffffff;
+}
+
+.fc .calendar-task .fc-event-title,
+.fc .calendar-activity .fc-event-title {
+  font-weight: 500;
+}
+
+/* Dark mode */
+
+[data-theme="dark"] .fc .calendar-task {
+  color: var(--mycircle-text);
+}
+
+[data-theme="dark"] .fc .calendar-activity {
+  color: var(--mycircle-text);
+}
+
+[data-theme="dark"] .fc .calendar-task .fc-event-title,
+[data-theme="dark"] .fc .calendar-activity .fc-event-title {
+  color: var(--mycircle-text);
+}
