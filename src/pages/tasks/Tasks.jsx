@@ -10,6 +10,9 @@ function Tasks() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
   const getTasks = async () => {
     try {
       const response = await service.get("/tasks");
@@ -36,6 +39,19 @@ function Tasks() {
     getTasks();
   }, [groupId]);
 
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearch = task.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "completed" && task.completed) ||
+      (statusFilter === "todo" && !task.completed);
+
+    return matchesSearch && matchesStatus;
+  });
+
   if (isLoading) {
     return <p>Loading tasks...</p>;
   }
@@ -49,6 +65,25 @@ function Tasks() {
       <Link to={`/groups/${groupId}`}>← Back to group</Link>
 
       <h1>Tasks</h1>
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          placeholder="Search tasks..."
+          className="h-11 flex-1 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-4 text-sm text-(--mycircle-text) outline-none focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary)"
+        />
+
+        <select
+          value={statusFilter}
+          onChange={(event) => setStatusFilter(event.target.value)}
+          className="h-11 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-4 text-sm text-(--mycircle-text) outline-none focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary)"
+        >
+          <option value="all">All tasks</option>
+          <option value="todo">To do</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
 
       <Link to={`/groups/${groupId}/tasks/create`}>Create a task</Link>
 
@@ -56,7 +91,7 @@ function Tasks() {
         <p>No tasks yet.</p>
       ) : (
         <ul>
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <li key={task._id}>
               <Link to={`/groups/${groupId}/tasks/${task._id}`}>
                 <strong>{task.title}</strong>
