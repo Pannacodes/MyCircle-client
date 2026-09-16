@@ -18,6 +18,7 @@ import Activities from "./pages/activities/Activities";
 import CreateActivity from "./pages/activities/CreateActivity";
 import ActivityDetails from "./pages/activities/ActivityDetails";
 import EditActivity from "./pages/activities/EditActivity";
+import Shopping from "./pages/shopping/Shopping";
 
 function App() {
   return (
@@ -158,6 +159,16 @@ function App() {
           <OnlyPrivate>
             <AppLayout>
               <EditActivity />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="/groups/:groupId/shopping"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <Shopping />
             </AppLayout>
           </OnlyPrivate>
         }

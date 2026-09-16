@@ -226,10 +226,10 @@ function GroupSettings() {
       name: "activities",
       label: "Activities",
     },
-    // {
-    //   name: "shopping",
-    //   label: "Shopping",
-    // },
+    {
+      name: "shopping",
+      label: "Shopping",
+    },
     // {
     //   name: "expenses",
     //   label: "Expenses",
