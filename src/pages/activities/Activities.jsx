@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function Activities() {
   const { groupId } = useParams();
@@ -55,7 +56,7 @@ function Activities() {
   }
 
   if (errorMessage) {
-    return <p>{errorMessage}</p>;
+    return <ErrorMessage message={errorMessage} />;
   }
 
   return (

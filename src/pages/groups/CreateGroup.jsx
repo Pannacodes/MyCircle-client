@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function CreateGroup() {
   const navigate = useNavigate();
@@ -113,13 +114,20 @@ function CreateGroup() {
             />
             Activities
           </label>
+          <label>
+            <input
+              type="checkbox"
+              value="shopping"
+              checked={enabledModules.includes("shopping")}
+              onChange={handleModuleChange}
+            />
+            Shopping
+          </label>
         </fieldset>
 
         {/* Error */}
         {errorMessage && (
-          <p id="group-form-error" role="alert">
-            {errorMessage}
-          </p>
+          <ErrorMessage id="group-form-error" message={errorMessage} />
         )}
 
         {/* Submit */}

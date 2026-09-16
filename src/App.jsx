@@ -19,6 +19,7 @@ import CreateActivity from "./pages/activities/CreateActivity";
 import ActivityDetails from "./pages/activities/ActivityDetails";
 import EditActivity from "./pages/activities/EditActivity";
 import Shopping from "./pages/shopping/Shopping";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -169,6 +170,16 @@ function App() {
           <OnlyPrivate>
             <AppLayout>
               <Shopping />
+            </AppLayout>
+          </OnlyPrivate>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <OnlyPrivate>
+            <AppLayout>
+              <NotFound />
             </AppLayout>
           </OnlyPrivate>
         }

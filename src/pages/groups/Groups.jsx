@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, LoaderCircle, Plus, Users } from "lucide-react";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function Groups() {
   const [groups, setGroups] = useState([]);
@@ -52,21 +53,8 @@ function Groups() {
   if (errorMessage) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center bg-(--mycircle-background) px-4">
-        <div className="max-w-md text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-(--mycircle-primary-tint)">
-            <Users
-              size={24}
-              strokeWidth={1.8}
-              className="text-(--mycircle-primary)"
-              aria-hidden="true"
-            />
-          </div>
-          <h1 className="text-xl font-semibold text-(--mycircle-text)">
-            Something went wrong
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-(--mycircle-muted)">
-            {errorMessage}
-          </p>{" "}
+        <div className="w-full max-w-md">
+          <ErrorMessage message={errorMessage} />
         </div>
       </div>
     );

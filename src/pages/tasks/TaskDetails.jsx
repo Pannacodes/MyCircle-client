@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function TaskDetails() {
   const { groupId, taskId } = useParams();
@@ -83,7 +84,7 @@ function TaskDetails() {
   }
 
   if (errorMessage) {
-    return <p>{errorMessage}</p>;
+    return <ErrorMessage message={errorMessage} />;
   }
 
   return (

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function EditActivity() {
   const { groupId, activityId } = useParams();
@@ -173,9 +174,10 @@ function EditActivity() {
         </div>
 
         {errorMessage && (
-          <p id="activity-form-error" role="alert">
-            {errorMessage}
-          </p>
+          <ErrorMessage
+            id="activity-form-error"
+            message={errorMessage}
+          />
         )}
 
         <button type="submit" disabled={isSaving}>

@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 
 import service from "../../services/index.services";
 import { AuthContext } from "../../context/auth.context";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function GroupSettings() {
   const { groupId } = useParams();
@@ -259,6 +260,7 @@ function GroupSettings() {
       <Link to={`/groups/${groupId}`}>← Back to group</Link>
 
       <h1>Group settings</h1>
+      {errorMessage && <ErrorMessage message={errorMessage} />}
       {isOwner && (
         <>
           <h2>Group information</h2>
@@ -294,9 +296,10 @@ function GroupSettings() {
             </button>
 
             {groupFormErrorMessage && (
-              <p id="group-settings-error" role="alert">
-                {groupFormErrorMessage}
-              </p>
+              <ErrorMessage
+                id="group-settings-error"
+                message={groupFormErrorMessage}
+              />
             )}
           </form>
         </>
@@ -357,9 +360,10 @@ function GroupSettings() {
             </div>
 
             {memberErrorMessage && (
-              <p id="member-form-error" role="alert">
-                {memberErrorMessage}
-              </p>
+              <ErrorMessage
+                id="member-form-error"
+                message={memberErrorMessage}
+              />
             )}
 
             <button type="submit" disabled={isAddingMember}>

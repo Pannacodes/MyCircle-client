@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Plus, ArrowRight, CalendarDays, Users } from "lucide-react";
 
 import service from "../services/index.services";
+import ErrorMessage from "../components/ErrorMessage";
 import { AuthContext } from "../context/auth.context";
 
 import FullCalendar from "@fullcalendar/react";
@@ -170,7 +171,7 @@ function Home() {
           )}
 
           {errorMessage && (
-            <p className="text-(--mycircle-error)">{errorMessage}</p>
+            <ErrorMessage message={errorMessage} />
           )}
 
           {!isLoading && !errorMessage && groups.length === 0 && (

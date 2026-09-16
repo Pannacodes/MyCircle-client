@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function CreateTask() {
   const { groupId } = useParams();
@@ -91,9 +92,7 @@ function CreateTask() {
         </div>
 
         {errorMessage && (
-          <p id="task-form-error" role="alert">
-            {errorMessage}
-          </p>
+          <ErrorMessage id="task-form-error" message={errorMessage} />
         )}
 
         <button type="submit" disabled={isLoading}>

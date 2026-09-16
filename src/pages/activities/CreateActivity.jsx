@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function CreateActivity() {
   const { groupId } = useParams();
@@ -143,9 +144,10 @@ function CreateActivity() {
         </div>
 
         {errorMessage && (
-          <p id="activity-form-error" role="alert">
-            {errorMessage}
-          </p>
+          <ErrorMessage
+            id="activity-form-error"
+            message={errorMessage}
+          />
         )}
 
         <button type="submit" disabled={isLoading}>

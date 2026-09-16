@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/auth.context";
 
 import service from "../../services/index.services";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function ActivityDetails() {
   const { groupId, activityId } = useParams();
@@ -99,7 +100,7 @@ function ActivityDetails() {
   }
 
   if (errorMessage) {
-    return <p>{errorMessage}</p>;
+    return <ErrorMessage message={errorMessage} />;
   }
 
   const isParticipant = activity.participants.some(
