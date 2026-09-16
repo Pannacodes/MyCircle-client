@@ -5,7 +5,7 @@ function AppLayout({ children }) {
     <>
       <Navbar />
 
-      <main>{children}</main>
+      <main className="pt-16">{children}</main>
     </>
   );
 }

@@ -2,7 +2,15 @@ import { useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
 function AuthLayout({ children }) {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(
+    document.documentElement.dataset.theme || "light",
+  );
+
+  const changeTheme = (newTheme) => {
+    document.documentElement.dataset.theme = newTheme;
+    localStorage.setItem("mycircle-theme", newTheme);
+    setTheme(newTheme);
+  };
 
   return (
     <div
@@ -30,9 +38,9 @@ function AuthLayout({ children }) {
         <div className="flex items-center gap-1 rounded-full border border-(--mycircle-border) bg-(--mycircle-surface) p-1">
           <button
             type="button"
-            onClick={() => setTheme("light")}
+            onClick={() => changeTheme("light")}
             aria-label="Use light theme"
-            className={`flex h-7 w-7 items-center justify-center rounded-full ${
+            className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-full ${
               theme === "light"
                 ? "bg-(--mycircle-raised) text-(--mycircle-primary)"
                 : "text-(--mycircle-muted)"
@@ -43,9 +51,9 @@ function AuthLayout({ children }) {
 
           <button
             type="button"
-            onClick={() => setTheme("dark")}
+            onClick={() => changeTheme("dark")}
             aria-label="Use dark theme"
-            className={`flex h-7 w-7 items-center justify-center rounded-full ${
+            className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-full ${
               theme === "dark"
                 ? "bg-(--mycircle-raised) text-(--mycircle-primary)"
                 : "text-(--mycircle-muted)"
