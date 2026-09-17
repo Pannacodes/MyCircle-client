@@ -12,11 +12,9 @@ import GroupDetails from "./pages/groups/GroupDetails";
 import GroupSettings from "./pages/groups/GroupSettings";
 import Tasks from "./pages/tasks/Tasks";
 import CreateTask from "./pages/tasks/CreateTask";
-import TaskDetails from "./pages/tasks/TaskDetails";
 import EditTask from "./pages/tasks/EditTask";
 import Activities from "./pages/activities/Activities";
 import CreateActivity from "./pages/activities/CreateActivity";
-import ActivityDetails from "./pages/activities/ActivityDetails";
 import EditActivity from "./pages/activities/EditActivity";
 import Shopping from "./pages/shopping/Shopping";
 import NotFound from "./pages/NotFound";
@@ -105,16 +103,6 @@ function App() {
         }
       />
       <Route
-        path="/groups/:groupId/tasks/:taskId"
-        element={
-          <OnlyPrivate>
-            <AppLayout>
-              <TaskDetails />
-            </AppLayout>
-          </OnlyPrivate>
-        }
-      />
-      <Route
         path="/groups/:groupId/tasks/:taskId/edit"
         element={
           <OnlyPrivate>
@@ -140,16 +128,6 @@ function App() {
           <OnlyPrivate>
             <AppLayout>
               <CreateActivity />
-            </AppLayout>
-          </OnlyPrivate>
-        }
-      />
-      <Route
-        path="/groups/:groupId/activities/:activityId"
-        element={
-          <OnlyPrivate>
-            <AppLayout>
-              <ActivityDetails />
             </AppLayout>
           </OnlyPrivate>
         }

@@ -4,6 +4,13 @@ import { ArrowRight, LoaderCircle, Plus, Users } from "lucide-react";
 
 import service from "../../services/index.services";
 import ErrorMessage from "../../components/ErrorMessage";
+import EmptyState from "../../components/EmptyState";
+
+function getMemberInitials(username = "") {
+  const trimmedUsername = username.trim();
+
+  return trimmedUsername ? trimmedUsername.slice(0, 2).toUpperCase() : "?";
+}
 
 function Groups() {
   const [groups, setGroups] = useState([]);
@@ -86,35 +93,20 @@ function Groups() {
 
         {/* Empty state */}
         {groups.length === 0 && (
-          <section className="flex min-h-75 items-center justify-center rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-6 py-12">
-            <div className="max-w-md text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-(--mycircle-secondary-tint)">
-                <Users
-                  size={28}
-                  strokeWidth={1.8}
-                  className="text-(--mycircle-secondary)"
-                  aria-hidden="true"
-                />
-              </div>
-
-              <h2 className="text-xl font-semibold">
-                You're not part of any group yet.
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-(--mycircle-muted)">
-                Create your first group to start sharing tasks, activities and
-                plans with the people in your circle.
-              </p>
-
+          <EmptyState
+            icon={Users}
+            title="You're not part of any group yet."
+            description="Create your first group to start sharing tasks, activities and plans with the people in your circle."
+            action={
               <Link
                 to="/groups/create"
-                className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-(--mycircle-primary) px-5 text-sm font-semibold text-white transition-colors hover:bg-(--mycircle-primary-hover) focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
+                className="inline-flex h-11 items-center gap-2 rounded-xl bg-(--mycircle-primary) px-5 text-sm font-semibold text-white transition-colors hover:bg-(--mycircle-primary-hover) focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
               >
                 <Plus size={18} aria-hidden="true" />
                 Create your first group
               </Link>
-            </div>
-          </section>
+            }
+          />
         )}
 
         {/* Group cards */}
@@ -124,10 +116,24 @@ function Groups() {
               <Link
                 key={group._id}
                 to={`/groups/${group._id}`}
-                className="group flex flex-col rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-5 transition-shadow hover:shadow-[0_2px_8px_rgba(46,42,38,0.08)] focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
+                className="group flex flex-col rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(46,42,38,0.08)] focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
               >
-                {/* Group name */}
-                <h2 className="text-lg font-semibold">{group.name}</h2>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--mycircle-primary-tint) text-(--mycircle-primary)">
+                      <Users size={21} strokeWidth={1.8} aria-hidden="true" />
+                    </div>
+
+                    <h2 className="text-lg font-semibold">{group.name}</h2>
+                  </div>
+
+                  <ArrowRight
+                    size={18}
+                    strokeWidth={1.8}
+                    className="mt-1 shrink-0 text-(--mycircle-muted) transition-transform group-hover:translate-x-0.5 group-hover:text-(--mycircle-primary)"
+                    aria-hidden="true"
+                  />
+                </div>
 
                 {/* Group information */}
                 {group.generalInfo && (
@@ -152,23 +158,30 @@ function Groups() {
                       </p>
                     </div>
 
-                    <p className="mt-1 text-sm text-(--mycircle-text)">
-                      {group.members
-                        .map((member) => member.username)
-                        .join(" · ")}
-                    </p>
+                    <div className="mt-2 flex items-center justify-between gap-3">
+                      <div className="flex -space-x-2">
+                        {group.members.slice(0, 4).map((member) => (
+                          <span
+                            key={member._id}
+                            title={member.username}
+                            className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-(--mycircle-surface) bg-(--mycircle-secondary-tint) text-[11px] font-bold text-(--mycircle-secondary)"
+                          >
+                            {getMemberInitials(member.username)}
+                          </span>
+                        ))}
+                      </div>
+
+                      <span className="text-xs font-medium text-(--mycircle-muted)">
+                        {group.members.length} member
+                        {group.members.length === 1 ? "" : "s"}
+                      </span>
+                    </div>
                   </div>
                 )}
 
                 {/* View group */}
-                <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-(--mycircle-primary)">
+                <div className="mt-5 text-sm font-semibold text-(--mycircle-primary)">
                   View group
-                  <ArrowRight
-                    size={16}
-                    strokeWidth={2}
-                    className="transition-transform group-hover:translate-x-0.5"
-                    aria-hidden="true"
-                  />
                 </div>
               </Link>
             ))}

@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import AuthLayout from "../../components/AuthLayout";
+import Button from "../../components/Button";
 import { AuthContext } from "../../context/auth.context";
 
 function Login() {
@@ -132,13 +133,13 @@ function Login() {
         )}
 
         {/* Submit */}
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="h-11 w-full rounded-xl bg-(--mycircle-primary) px-4 text-[14px] font-semibold text-white transition-colors hover:bg-(--mycircle-primary-hover) disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full"
         >
           {isLoading ? "Logging in..." : "Log in"}
-        </button>
+        </Button>
       </form>
 
       {/* Signup link */}

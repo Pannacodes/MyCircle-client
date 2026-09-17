@@ -6,6 +6,7 @@ import { Plus, ArrowRight, CalendarDays, Users } from "lucide-react";
 import service from "../services/index.services";
 import ErrorMessage from "../components/ErrorMessage";
 import { AuthContext } from "../context/auth.context";
+import EmptyState from "../components/EmptyState";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -54,7 +55,6 @@ function Home() {
         classNames: ["calendar-task"],
         extendedProps: {
           type: "task",
-          taskId: task._id,
           groupId: task.group,
         },
       })),
@@ -68,7 +68,6 @@ function Home() {
         classNames: ["calendar-activity"],
         extendedProps: {
           type: "activity",
-          activityId: activity._id,
           groupId: activity.group,
         },
       })),
@@ -109,15 +108,17 @@ function Home() {
               displayEventTime={false}
               height="auto"
               eventClick={(info) => {
-                const { type, taskId, activityId, groupId } =
+                const { type, groupId } =
                   info.event.extendedProps;
 
+                const searchQuery = `?search=${encodeURIComponent(info.event.title)}`;
+
                 if (type === "task") {
-                  navigate(`/groups/${groupId}/tasks/${taskId}`);
+                  navigate(`/groups/${groupId}/tasks${searchQuery}`);
                 }
 
                 if (type === "activity") {
-                  navigate(`/groups/${groupId}/activities/${activityId}`);
+                  navigate(`/groups/${groupId}/activities${searchQuery}`);
                 }
               }}
             />
@@ -175,19 +176,20 @@ function Home() {
           )}
 
           {!isLoading && !errorMessage && groups.length === 0 && (
-            <div className="rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-6">
-              <p className="mb-4 text-base">
-                You're not part of any groups yet.
-              </p>
-
-              <Link
-                to="/groups/create"
-                className="inline-flex h-11 items-center gap-2 rounded-xl bg-(--mycircle-primary) px-5 text-sm font-semibold text-white hover:bg-(--mycircle-primary-hover) focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
-              >
-                <Plus size={18} aria-hidden="true" />
-                Create your first group
-              </Link>
-            </div>
+            <EmptyState
+              icon={Users}
+              title="You're not part of any circle yet."
+              description="Create your first group to start sharing life with your people."
+              action={
+                <Link
+                  to="/groups/create"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-(--mycircle-primary) px-5 text-sm font-semibold text-white hover:bg-(--mycircle-primary-hover) focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
+                >
+                  <Plus size={18} aria-hidden="true" />
+                  Create your first group
+                </Link>
+              }
+            />
           )}
 
           {!isLoading && !errorMessage && groups.length > 0 && (
@@ -196,7 +198,7 @@ function Home() {
                 <Link
                   key={group._id}
                   to={`/groups/${group._id}`}
-                  className="group rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-5 transition-shadow hover:shadow-[0_2px_6px_rgba(46,42,38,0.08)] focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
+                  className="group rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(46,42,38,0.08)] focus:outline-none focus:ring-2 focus:ring-(--mycircle-primary) focus:ring-offset-2"
                 >
                   <h3 className="text-lg font-semibold">{group.name}</h3>
 

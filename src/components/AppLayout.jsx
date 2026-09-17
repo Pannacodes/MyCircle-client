@@ -1,19 +1,68 @@
+import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import { CalendarDays, CheckSquare, Settings, ShoppingBasket, House } from "lucide-react";
+import {
+  CalendarDays,
+  CheckSquare,
+  House,
+  Settings,
+  ShoppingBasket,
+} from "lucide-react";
 import { NavLink, useLocation, useParams } from "react-router-dom";
+import service from "../services/index.services";
 
 const groupLinks = [
   { label: "Dashboard", icon: House, suffix: "" },
-  { label: "Tasks", icon: CheckSquare, suffix: "/tasks" },
-  { label: "Activities", icon: CalendarDays, suffix: "/activities" },
-  { label: "Shopping", icon: ShoppingBasket, suffix: "/shopping" },
+  { label: "Tasks", icon: CheckSquare, suffix: "/tasks", module: "tasks" },
+  {
+    label: "Activities",
+    icon: CalendarDays,
+    suffix: "/activities",
+    module: "activities",
+  },
+  {
+    label: "Shopping",
+    icon: ShoppingBasket,
+    suffix: "/shopping",
+    module: "shopping",
+  },
   { label: "Settings", icon: Settings, suffix: "/settings" },
 ];
 
 function AppLayout({ children }) {
   const { groupId } = useParams();
   const { pathname } = useLocation();
+  const [enabledModules, setEnabledModules] = useState([]);
   const isGroupRoute = Boolean(groupId);
+
+  useEffect(() => {
+    if (!groupId) {
+      setEnabledModules([]);
+      return;
+    }
+
+    const getEnabledModules = async () => {
+      try {
+        const response = await service.get(`/groups/${groupId}`);
+        setEnabledModules(response.data.enabledModules || []);
+      } catch (error) {
+        console.log(error);
+        setEnabledModules([]);
+      }
+    };
+
+    const handleGroupUpdated = (event) => {
+      if (event.detail?.groupId === groupId) {
+        getEnabledModules();
+      }
+    };
+
+    window.addEventListener("mycircle:group-updated", handleGroupUpdated);
+    getEnabledModules();
+
+    return () => {
+      window.removeEventListener("mycircle:group-updated", handleGroupUpdated);
+    };
+  }, [groupId]);
 
   return (
     <>
@@ -26,7 +75,11 @@ function AppLayout({ children }) {
           </p>
 
           <nav aria-label="Group navigation" className="mt-4 space-y-1">
-            {groupLinks.map(({ label, icon: Icon, suffix }) => {
+            {groupLinks
+              .filter(
+                ({ module }) => !module || enabledModules.includes(module),
+              )
+              .map(({ label, icon: Icon, suffix }) => {
               const href = `/groups/${groupId}${suffix}`;
               const isActive =
                 suffix === ""
@@ -46,8 +99,8 @@ function AppLayout({ children }) {
                   <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
                   {label}
                 </NavLink>
-              );
-            })}
+                );
+              })}
           </nav>
         </aside>
       )}

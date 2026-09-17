@@ -4,6 +4,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import service from "../../services/index.services";
 import { AuthContext } from "../../context/auth.context";
 import ErrorMessage from "../../components/ErrorMessage";
+import Button from "../../components/Button";
 
 function GroupSettings() {
   const { groupId } = useParams();
@@ -201,6 +202,9 @@ function GroupSettings() {
       });
 
       setGroup(response.data);
+      window.dispatchEvent(
+        new CustomEvent("mycircle:group-updated", { detail: { groupId } }),
+      );
     } catch (error) {
       console.log(error);
 
@@ -213,7 +217,11 @@ function GroupSettings() {
   };
 
   if (isLoading) {
-    return <p>Loading group settings...</p>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-(--mycircle-background) text-sm text-(--mycircle-muted)">
+        Loading group settings...
+      </div>
+    );
   }
 
   const isOwner = group.owners.some((owner) => owner._id === loggedUserId);
@@ -244,6 +252,9 @@ function GroupSettings() {
       );
 
       setGroup(response.data);
+      window.dispatchEvent(
+        new CustomEvent("mycircle:group-updated", { detail: { groupId } }),
+      );
     } catch (error) {
       console.log(error);
 
@@ -256,18 +267,30 @@ function GroupSettings() {
   };
 
   return (
-    <div>
-      <Link to={`/groups/${groupId}`}>← Back to group</Link>
+    <div className="min-h-screen bg-(--mycircle-background) px-4 py-8 text-(--mycircle-text) sm:px-6">
+      <div className="mx-auto max-w-4xl">
+      <Link
+        to={`/groups/${groupId}`}
+        className="text-sm font-semibold text-(--mycircle-muted) hover:text-(--mycircle-primary)"
+      >
+        ← Back to group
+      </Link>
 
-      <h1>Group settings</h1>
+      <div className="mt-6">
+        <p className="text-sm font-semibold text-(--mycircle-primary)">Your circle</p>
+        <h1 className="mt-1 text-3xl font-bold">Group settings</h1>
+        <p className="mt-2 text-sm text-(--mycircle-muted)">Shape how this shared space works.</p>
+      </div>
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {isOwner && (
-        <>
-          <h2>Group information</h2>
+        <section className="mt-7 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-5 shadow-[0_1px_3px_rgba(46,42,38,0.06)] sm:p-6">
+          <h2 className="text-lg font-semibold">Group information</h2>
 
-          <form onSubmit={updateGroup} noValidate>
+          <form onSubmit={updateGroup} noValidate className="mt-5 space-y-5">
             <div>
-              <label htmlFor="name">Group name *</label>
+              <label htmlFor="name" className="mb-2 block text-sm font-semibold">
+                Group name <span className="text-(--mycircle-error)">*</span>
+              </label>
 
               <input
                 id="name"
@@ -278,22 +301,27 @@ function GroupSettings() {
                 aria-describedby={
                   groupFormErrorMessage ? "group-settings-error" : undefined
                 }
+                className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-base outline-none focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
               />
             </div>
 
             <div>
-              <label htmlFor="generalInfo">General information (optional)</label>
+              <label htmlFor="generalInfo" className="mb-2 block text-sm font-semibold">
+                General information <span className="font-normal text-(--mycircle-muted)">(optional)</span>
+              </label>
 
               <textarea
                 id="generalInfo"
                 value={generalInfo}
                 onChange={(event) => setGeneralInfo(event.target.value)}
+                rows={4}
+                className="w-full resize-y rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 py-3 text-base outline-none focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
               />
             </div>
 
-            <button type="submit" disabled={isSaving}>
+            <Button type="submit" disabled={isSaving}>
               {isSaving ? "Saving..." : "Save changes"}
-            </button>
+            </Button>
 
             {groupFormErrorMessage && (
               <ErrorMessage
@@ -302,26 +330,31 @@ function GroupSettings() {
               />
             )}
           </form>
-        </>
+        </section>
       )}
 
-      <h2>Members</h2>
+      <section className="mt-5 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-5 sm:p-6">
+      <h2 className="text-lg font-semibold">Members</h2>
 
-      <ul>
+      <ul className="mt-4 divide-y divide-(--mycircle-border)">
         {group.members.map((member) => {
           const memberIsOwner = group.owners.some(
             (owner) => owner._id === member._id,
           );
 
           return (
-            <li key={member._id}>
-              {member.username} ({member.email})
-              {memberIsOwner && <span> — Owner</span>}
+            <li key={member._id} className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold">{member.username}</p>
+                <p className="mt-1 text-sm text-(--mycircle-muted)">{member.email}</p>
+                {memberIsOwner && <span className="mt-2 inline-flex rounded-full bg-(--mycircle-primary-tint) px-2.5 py-1 text-xs font-semibold text-(--mycircle-primary)">Owner</span>}
+              </div>
               {isOwner && !memberIsOwner && (
-                <>
+                <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => promoteMember(member._id)}
+                    className="rounded-lg border border-(--mycircle-border) px-3 py-2 text-xs font-semibold hover:bg-(--mycircle-raised)"
                   >
                     Make owner
                   </button>
@@ -329,10 +362,11 @@ function GroupSettings() {
                   <button
                     type="button"
                     onClick={() => removeMember(member._id)}
+                    className="rounded-lg px-3 py-2 text-xs font-semibold text-(--mycircle-error) hover:bg-(--mycircle-raised)"
                   >
                     Remove
                   </button>
-                </>
+                </div>
               )}
             </li>
           );
@@ -340,12 +374,14 @@ function GroupSettings() {
       </ul>
 
       {isOwner && (
-        <>
-          <h3>Add a member</h3>
+        <div className="mt-6 border-t border-(--mycircle-border) pt-6">
+          <h3 className="text-sm font-semibold">Add a member</h3>
 
-          <form onSubmit={addMember} noValidate>
+          <form onSubmit={addMember} noValidate className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
             <div>
-              <label htmlFor="memberEmail">Email address *</label>
+              <label htmlFor="memberEmail" className="mb-2 block text-sm font-semibold">
+                Email address <span className="text-(--mycircle-error)">*</span>
+              </label>
 
               <input
                 id="memberEmail"
@@ -356,6 +392,7 @@ function GroupSettings() {
                 aria-describedby={
                   memberErrorMessage ? "member-form-error" : undefined
                 }
+                className="h-11 w-full rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-base outline-none focus:border-(--mycircle-primary) focus:ring-2 focus:ring-(--mycircle-primary-tint)"
               />
             </div>
 
@@ -366,50 +403,59 @@ function GroupSettings() {
               />
             )}
 
-            <button type="submit" disabled={isAddingMember}>
+            <Button type="submit" disabled={isAddingMember}>
               {isAddingMember ? "Adding..." : "Add member"}
-            </button>
+            </Button>
           </form>
-        </>
+        </div>
       )}
+      </section>
 
-      <h2>Modules</h2>
+      <section className="mt-5 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-5 sm:p-6">
+      <h2 className="text-lg font-semibold">Modules</h2>
 
+      <div className="mt-4 space-y-3">
       {modules.map((module) => {
         const isEnabled = group.enabledModules.includes(module.name);
 
         return (
-          <div key={module.name}>
-            <span>{module.label}</span>
+          <div key={module.name} className="flex items-center justify-between gap-3 rounded-lg border border-(--mycircle-border) p-3">
+            <span className="text-sm font-semibold">{module.label}</span>
 
             {isEnabled ? (
               <>
-                <span> Enabled</span>
+                <span className="mr-2 text-xs font-semibold text-(--mycircle-success)">Enabled</span>
                 {isOwner && (
                   <button
                     type="button"
                     onClick={() => disableModule(module.name)}
+                    className="rounded-lg px-3 py-2 text-xs font-semibold text-(--mycircle-error) hover:bg-(--mycircle-raised)"
                   >
                     Disable
                   </button>
                 )}
               </>
             ) : (
-              <button type="button" onClick={() => enableModule(module.name)}>
+              <button type="button" onClick={() => enableModule(module.name)} className="rounded-lg border border-(--mycircle-border) px-3 py-2 text-xs font-semibold hover:bg-(--mycircle-raised)">
                 Enable
               </button>
             )}
           </div>
         );
       })}
-      <button type="button" onClick={leaveGroup}>
+      </div>
+      </section>
+      <div className="mt-6 flex flex-wrap gap-3 border-t border-(--mycircle-border) pt-6">
+      <button type="button" onClick={leaveGroup} className="rounded-xl border border-(--mycircle-border) px-4 py-2.5 text-sm font-semibold hover:bg-(--mycircle-raised)">
         Leave group
       </button>
       {isOwner && (
-        <button type="button" onClick={deleteGroup}>
+        <button type="button" onClick={deleteGroup} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-(--mycircle-error) hover:bg-(--mycircle-raised)">
           Delete group
         </button>
       )}
+      </div>
+      </div>
     </div>
   );
 }

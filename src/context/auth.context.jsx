@@ -85,7 +85,11 @@ function AuthWrapper({ children }) {
   };
 
   if (isVerifyingUser) {
-    return <h3>Verifying user credentials...</h3>;
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-(--mycircle-background) px-4 text-center text-sm font-medium text-(--mycircle-muted)">
+        Verifying your circle...
+      </div>
+    );
   }
 
   return (

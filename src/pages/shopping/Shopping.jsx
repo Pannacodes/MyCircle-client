@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ShoppingCart } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Circle,
+  Plus,
+  ShoppingCart,
+  Trash2,
+} from "lucide-react";
 
 import service from "../../services/index.services";
+import EmptyState from "../../components/EmptyState";
+import Button from "../../components/Button";
 
 function Shopping() {
   const { groupId } = useParams();
@@ -109,7 +118,11 @@ function Shopping() {
   }, [groupId]);
 
   if (isLoading) {
-    return <p>Loading shopping list...</p>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-(--mycircle-background) text-sm text-(--mycircle-muted)">
+        Loading shopping list...
+      </div>
+    );
   }
 
   if (errorMessage) {
@@ -150,36 +163,91 @@ function Shopping() {
         </div>
 
         {shoppingItems.length === 0 ? (
-          <p>No shopping items yet.</p>
+          <EmptyState
+            icon={ShoppingCart}
+            title="Your shopping list is clear."
+            description="Add something your circle needs to pick up."
+            action={
+              <a
+                href="#shopping-item"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-(--mycircle-secondary) px-5 text-sm font-semibold text-white hover:brightness-95"
+              >
+                <Plus size={18} aria-hidden="true" />
+                Add an item
+              </a>
+            }
+          />
         ) : (
-          <ul>
+          <ul className="space-y-3">
             {shoppingItems.map((item) => (
-              <li key={item._id}>
-                <button type="button" onClick={() => toggleShoppingItem(item)}>
-                  {item.completed ? "✓" : "○"}
+              <li
+                key={item._id}
+                className="flex items-center gap-3 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-4 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(46,42,38,0.08)]"
+              >
+                <button
+                  type="button"
+                  onClick={() => toggleShoppingItem(item)}
+                  aria-label={
+                    item.completed
+                      ? `Mark ${item.name} as needed`
+                      : `Mark ${item.name} as complete`
+                  }
+                  className="shrink-0 rounded-full"
+                >
+                  {item.completed ? (
+                    <CheckCircle2
+                      size={21}
+                      className="text-(--mycircle-success)"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <Circle
+                      size={21}
+                      className="text-(--mycircle-secondary)"
+                      aria-hidden="true"
+                    />
+                  )}
                 </button>
-                {item.name}
+
+                <span
+                  className={`flex-1 text-sm font-semibold ${
+                    item.completed
+                      ? "text-(--mycircle-muted) line-through"
+                      : ""
+                  }`}
+                >
+                  {item.name}
+                </span>
+
                 <button
                   type="button"
                   onClick={() => deleteShoppingItem(item._id)}
+                  aria-label={`Delete ${item.name}`}
+                  className="rounded-lg p-2 text-(--mycircle-muted) hover:text-(--mycircle-error)"
                 >
-                  Delete
+                  <Trash2 size={17} aria-hidden="true" />
                 </button>
               </li>
             ))}
           </ul>
         )}
-        <form onSubmit={createShoppingItem}>
+
+        <form
+          id="shopping-item"
+          onSubmit={createShoppingItem}
+          className="mt-6 flex flex-col gap-3 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-4 sm:flex-row"
+        >
           <input
             type="text"
             value={itemName}
             onChange={(event) => setItemName(event.target.value)}
             placeholder="What do you need?"
+            className="h-11 min-w-0 flex-1 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-3.5 text-base outline-none placeholder:text-(--mycircle-muted) focus:border-(--mycircle-secondary) focus:ring-2 focus:ring-(--mycircle-secondary-tint)"
           />
 
-          <button type="submit" disabled={isCreating}>
+          <Button type="submit" disabled={isCreating} variant="secondary">
             {isCreating ? "Adding..." : "Add"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

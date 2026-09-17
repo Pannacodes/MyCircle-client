@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
   LogOut,
@@ -22,7 +22,6 @@ function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const initials = loggedUsername
     ? loggedUsername.slice(0, 2).toUpperCase()

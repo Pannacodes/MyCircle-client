@@ -18,7 +18,7 @@ function AuthLayout({ children }) {
       className="flex min-h-dvh flex-col overflow-x-hidden bg-(--mycircle-background) text-(--mycircle-text) transition-colors duration-200"
     >
       {/* Top bar */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-6 md:px-8">
+      <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-6 md:px-8">
         {/* MyCircle logo */}
         <div className="flex items-center gap-2.5 text-[17px] font-extrabold">
           <img
@@ -40,32 +40,34 @@ function AuthLayout({ children }) {
             type="button"
             onClick={() => changeTheme("light")}
             aria-label="Use light theme"
-            className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-full ${
+            aria-pressed={theme === "light"}
+            className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-none ${
               theme === "light"
                 ? "bg-(--mycircle-raised) text-(--mycircle-primary)"
-                : "text-(--mycircle-muted)"
+                : "text-(--mycircle-muted) hover:bg-(--mycircle-raised)"
             }`}
           >
-            <Sun size={15} />
+            <Sun size={15} aria-hidden="true" />
           </button>
 
           <button
             type="button"
             onClick={() => changeTheme("dark")}
             aria-label="Use dark theme"
-            className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-full ${
+            aria-pressed={theme === "dark"}
+            className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-none ${
               theme === "dark"
                 ? "bg-(--mycircle-raised) text-(--mycircle-primary)"
-                : "text-(--mycircle-muted)"
+                : "text-(--mycircle-muted) hover:bg-(--mycircle-raised)"
             }`}
           >
-            <Moon size={15} />
+            <Moon size={15} aria-hidden="true" />
           </button>
         </div>
       </header>
       {/* Auth card area */}
       <main className="relative z-10 flex flex-1 items-center justify-center px-5 pb-16 pt-5">
-        <div className="w-full max-w-100 rounded-[20px] border border-(--mycircle-border) bg-(--mycircle-surface) px-8 pb-7.5 pt-9 shadow-[0_10px_24px_rgba(46,42,38,0.10),0_2px_8px_rgba(46,42,38,0.06)]">
+        <div className="w-full max-w-100 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) px-6 pb-7 pt-8 shadow-[0_4px_12px_rgba(46,42,38,0.08)] sm:px-8">
           {/* Logo inside card */}
           <div className="mb-4.5 flex justify-center">
             <img
