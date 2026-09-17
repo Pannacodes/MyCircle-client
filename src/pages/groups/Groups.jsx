@@ -71,7 +71,7 @@ function Groups() {
             </h1>
 
             <p className="mt-2 text-base text-(--mycircle-muted)">
-              Your private circles and the people in them.
+              Your private groups and the people in them.
             </p>
           </div>
 
@@ -98,7 +98,7 @@ function Groups() {
               </div>
 
               <h2 className="text-xl font-semibold">
-                You're not part of any circle yet.
+                You're not part of any group yet.
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-(--mycircle-muted)">

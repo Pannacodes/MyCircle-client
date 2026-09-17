@@ -84,7 +84,7 @@ function Home() {
           </h1>
 
           <p className="mt-2 text-base text-(--mycircle-muted)">
-            Here's what's happening across your circles.
+            Here's what's happening across your groups.
           </p>
         </section>
 
@@ -154,7 +154,7 @@ function Home() {
                 aria-hidden="true"
               />
 
-              <h2 className="text-2xl font-semibold">Your circles</h2>
+              <h2 className="text-2xl font-semibold">Your groups</h2>
             </div>
 
             <Link
@@ -167,7 +167,7 @@ function Home() {
           </div>
 
           {isLoading && (
-            <p className="text-(--mycircle-muted)">Loading your circles...</p>
+            <p className="text-(--mycircle-muted)">Loading your groups...</p>
           )}
 
           {errorMessage && (
@@ -177,7 +177,7 @@ function Home() {
           {!isLoading && !errorMessage && groups.length === 0 && (
             <div className="rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-6">
               <p className="mb-4 text-base">
-                You're not part of any circle yet.
+                You're not part of any groups yet.
               </p>
 
               <Link

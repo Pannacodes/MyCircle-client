@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -52,18 +53,44 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+}
+
 body {
   margin: 0;
   background-color: var(--mycircle-background);
   color: var(--mycircle-text);
-  font-family: "Plus Jakarta Sans", Arial, sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  line-height: 1.5;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--mycircle-primary);
+  outline-offset: 2px;
 }
 
 /* FullCalendar */
 
 .fc {
   color: var(--mycircle-text);
-  font-family: "Plus Jakarta Sans", Arial, sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 /* Calendar header */

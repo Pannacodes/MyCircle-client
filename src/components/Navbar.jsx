@@ -1,17 +1,43 @@
-import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import {
+  ChevronDown,
+  LogOut,
+  Menu,
+  Moon,
+  Sun,
+  UserRound,
+  X,
+} from "lucide-react";
 
 import { AuthContext } from "../context/auth.context";
 
 function Navbar() {
-  const { logoutUser } = useContext(AuthContext);
+  const { loggedUsername, logoutUser } = useContext(AuthContext);
   const [theme, setTheme] = useState(
     document.documentElement.dataset.theme || "light",
   );
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileMenuRef = useRef(null);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const initials = loggedUsername
+    ? loggedUsername.slice(0, 2).toUpperCase()
+    : "MC";
+
+  useEffect(() => {
+    const closeProfileMenu = (event) => {
+      if (!profileMenuRef.current?.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeProfileMenu);
+    return () => document.removeEventListener("mousedown", closeProfileMenu);
+  }, []);
 
   const changeTheme = (newTheme) => {
     document.documentElement.dataset.theme = newTheme;
@@ -22,21 +48,30 @@ function Navbar() {
   const handleLogout = () => {
     logoutUser();
     setIsMenuOpen(false);
+    setIsProfileOpen(false);
     navigate("/login");
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setIsProfileOpen(false);
   };
 
+  const navLinkClass = ({ isActive }) =>
+    `text-sm font-semibold transition-colors ${
+      isActive
+        ? "text-(--mycircle-primary)"
+        : "text-(--mycircle-muted) hover:text-(--mycircle-text)"
+    }`;
+
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 flex min-h-16 items-center justify-between border-b border-(--mycircle-border) bg-(--mycircle-surface) px-4 text-(--mycircle-text) shadow-[0_1px_3px_rgba(46,42,38,0.06)] sm:px-6">
-      <div className="flex w-full min-h-16 items-center justify-between px-4 sm:px-6">
+    <nav className="fixed inset-x-0 top-0 z-50 border-b border-(--mycircle-border) bg-(--mycircle-surface) text-(--mycircle-text) shadow-[0_1px_3px_rgba(46,42,38,0.06)]">
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
           to="/"
           onClick={closeMenu}
-          className="flex items-center gap-2 font-extrabold"
+          className="flex items-center gap-2.5 font-extrabold tracking-[-0.02em]"
         >
           <img
             src={
@@ -52,25 +87,13 @@ function Navbar() {
         </Link>
 
         {/* Desktop navigation */}
-        <div className="hidden items-center gap-5 sm:flex">
-          <Link
-            to="/"
-            className="text-sm font-medium transition-colors hover:text-(--mycircle-primary)"
-          >
+        <div className="hidden items-center gap-6 sm:flex">
+          <NavLink to="/" className={navLinkClass}>
             Home
-          </Link>
-          <Link
-            to="/profile"
-            className="text-sm font-medium transition-colors hover:text-(--mycircle-primary)"
-          >
-            Profile
-          </Link>
-          <Link
-            to="/groups"
-            className="text-sm font-medium transition-colors hover:text-(--mycircle-primary)"
-          >
-            Groups
-          </Link>
+          </NavLink>
+          <NavLink to="/groups" className={navLinkClass}>
+            My groups
+          </NavLink>
 
           {/* Theme toggle */}
           <div className="flex items-center gap-1 rounded-full border border-(--mycircle-border) bg-(--mycircle-raised) p-1 transition-colors duration-200">
@@ -103,13 +126,48 @@ function Navbar() {
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="cursor-pointer text-sm font-medium transition-colors hover:text-(--mycircle-primary)"
-          >
-            Log out
-          </button>
+          <div className="relative" ref={profileMenuRef}>
+            <button
+              type="button"
+              onClick={() => setIsProfileOpen((isOpen) => !isOpen)}
+              aria-expanded={isProfileOpen}
+              aria-haspopup="menu"
+              className="flex cursor-pointer items-center gap-2 rounded-full p-1 pr-2 transition-colors hover:bg-(--mycircle-raised)"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--mycircle-secondary-tint) text-xs font-bold text-(--mycircle-secondary)">
+                {initials}
+              </span>
+              <ChevronDown size={15} aria-hidden="true" />
+            </button>
+
+            {isProfileOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 top-12 w-52 rounded-xl border border-(--mycircle-border) bg-(--mycircle-surface) p-2 shadow-[0_8px_24px_rgba(46,42,38,0.12)]"
+              >
+                <p className="px-3 py-2 text-xs text-(--mycircle-muted)">
+                  Signed in as <strong className="text-(--mycircle-text)">{loggedUsername || "member"}</strong>
+                </p>
+                <Link
+                  to="/profile"
+                  onClick={() => setIsProfileOpen(false)}
+                  role="menuitem"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-(--mycircle-raised)"
+                >
+                  <UserRound size={16} aria-hidden="true" />
+                  Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  role="menuitem"
+                  className="w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-semibold text-(--mycircle-error) hover:bg-(--mycircle-raised)"
+                >
+                  Log out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Mobile menu button */}
@@ -143,26 +201,18 @@ function Navbar() {
             </Link>
 
             <Link
-              to="/profile"
-              onClick={closeMenu}
-              className="rounded-xl px-4 py-3 text-sm font-medium hover:bg-(--mycircle-raised)"
-            >
-              Profile
-            </Link>
-
-            <Link
               to="/groups"
               onClick={closeMenu}
               className="rounded-xl px-4 py-3 text-sm font-medium hover:bg-(--mycircle-raised)"
             >
-              Groups
+              My groups
             </Link>
 
             <div className="my-2 border-t border-(--mycircle-border)" />
 
             {/* Mobile theme toggle */}
 
-            <div className="flex items-center gap-1 rounded-full border border-(--mycircle-border) bg-(--mycircle-raised) p-1 transition-colors duration-200">
+            <div className="flex w-fit self-start items-center gap-1 rounded-full border border-(--mycircle-border) bg-(--mycircle-raised) p-1 transition-colors duration-200">
               <button
                 type="button"
                 onClick={() => changeTheme("light")}
@@ -194,11 +244,21 @@ function Navbar() {
 
             <div className="my-2 border-t border-(--mycircle-border)" />
 
+            <Link
+              to="/profile"
+              onClick={closeMenu}
+              className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-(--mycircle-text) hover:bg-(--mycircle-raised)"
+            >
+              <UserRound size={17} strokeWidth={1.8} aria-hidden="true" />
+              Profile
+            </Link>
+
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-xl px-4 py-3 text-left text-sm font-medium hover:bg-(--mycircle-raised)"
+              className="flex w-full cursor-pointer items-center gap-2 rounded-xl px-4 py-3 text-left text-sm font-semibold text-(--mycircle-error) hover:bg-(--mycircle-raised)"
             >
+              <LogOut size={17} strokeWidth={1.8} aria-hidden="true" />
               Log out
             </button>
           </div>
